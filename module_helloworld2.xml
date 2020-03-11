@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="module_helloworld2" default="compile.module.helloworld2">
+  <dirname property="module.helloworld2.basedir" file="${ant.file.module_helloworld2}"/>
+  
+  <property name="module.jdk.home.helloworld2" value="${project.jdk.home}"/>
+  <property name="module.jdk.bin.helloworld2" value="${project.jdk.bin}"/>
+  <property name="module.jdk.classpath.helloworld2" value="${project.jdk.classpath}"/>
+  
+  <property name="compiler.args.helloworld2" value="-encoding UTF-8 -source 13 -target 13 ${compiler.args}"/>
+  
+  <property name="helloworld2.output.dir" value="${module.helloworld2.basedir}/out/production/HelloWorld2"/>
+  <property name="helloworld2.testoutput.dir" value="${module.helloworld2.basedir}/out/test/HelloWorld2"/>
+  
+  <path id="helloworld2.module.bootclasspath">
+    <!-- Paths to be included in compilation bootclasspath -->
+  </path>
+  
+  <path id="helloworld2.module.production.classpath">
+    <path refid="${module.jdk.classpath.helloworld2}"/>
+  </path>
+  
+  <path id="helloworld2.runtime.production.module.classpath">
+    <pathelement location="${helloworld2.output.dir}"/>
+  </path>
+  
+  <path id="helloworld2.module.classpath">
+    <path refid="${module.jdk.classpath.helloworld2}"/>
+    <pathelement location="${helloworld2.output.dir}"/>
+  </path>
+  
+  <path id="helloworld2.runtime.module.classpath">
+    <pathelement location="${helloworld2.testoutput.dir}"/>
+    <pathelement location="${helloworld2.output.dir}"/>
+  </path>
+  
+  
+  <patternset id="excluded.from.module.helloworld2">
+    <patternset refid="ignored.files"/>
+  </patternset>
+  
+  <patternset id="excluded.from.compilation.helloworld2">
+    <patternset refid="excluded.from.module.helloworld2"/>
+  </patternset>
+  
+  <path id="helloworld2.module.sourcepath">
+    <dirset dir="${module.helloworld2.basedir}">
+      <include name="src"/>
+    </dirset>
+  </path>
+  
+  
+  <target name="compile.module.helloworld2" depends="compile.module.helloworld2.production,compile.module.helloworld2.tests" description="Compile module HelloWorld2"/>
+  
+  <target name="compile.module.helloworld2.production" depends="register.custom.compilers" description="Compile module HelloWorld2; production classes">
+    <mkdir dir="${helloworld2.output.dir}"/>
+    <javac2 destdir="${helloworld2.output.dir}" debug="${compiler.debug}" nowarn="${compiler.generate.no.warnings}" memorymaximumsize="${compiler.max.memory}" fork="true" executable="${module.jdk.bin.helloworld2}/javac">
+      <compilerarg line="${compiler.args.helloworld2}"/>
+      <bootclasspath refid="helloworld2.module.bootclasspath"/>
+      <classpath refid="helloworld2.module.production.classpath"/>
+      <src refid="helloworld2.module.sourcepath"/>
+      <patternset refid="excluded.from.compilation.helloworld2"/>
+    </javac2>
+    
+    <copy todir="${helloworld2.output.dir}">
+      <fileset dir="${module.helloworld2.basedir}/src">
+        <patternset refid="compiler.resources"/>
+        <type type="file"/>
+      </fileset>
+    </copy>
+  </target>
+  
+  <target name="compile.module.helloworld2.tests" depends="register.custom.compilers,compile.module.helloworld2.production" description="compile module HelloWorld2; test classes" unless="skip.tests"/>
+  
+  <target name="clean.module.helloworld2" description="cleanup module">
+    <delete dir="${helloworld2.output.dir}"/>
+    <delete dir="${helloworld2.testoutput.dir}"/>
+  </target>
+</project>
